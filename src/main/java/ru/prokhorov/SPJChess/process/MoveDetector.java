@@ -10,6 +10,9 @@ public class MoveDetector {
         for (int i = 0; i < board.getListWhite().size(); i++) {
             if(field == board.getListWhite().get(i).getPosition()) return board.getListWhite().get(i);
         }
+        for (int i = 0; i < board.getListBlack().size(); i++) {
+            if(field == board.getListBlack().get(i).getPosition()) return board.getListBlack().get(i);
+        }
         return null;
     }
 }
