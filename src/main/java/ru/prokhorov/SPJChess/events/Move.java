@@ -6,6 +6,10 @@ public class Move {
     Figure figure;
     int targetField;
 
+    public Move(){
+
+    }
+
     public Move(Figure figure, int targetField) {
         this.figure = figure;
         this.targetField = targetField;

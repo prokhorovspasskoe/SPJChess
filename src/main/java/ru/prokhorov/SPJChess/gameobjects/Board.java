@@ -11,7 +11,6 @@ public class Board {
     private List<Figure> listBlack;
     private List<Move> formRecording;
     int remainingTime;
-
     FigureColor turn;
 
     public List<Figure> getListWhite() {
