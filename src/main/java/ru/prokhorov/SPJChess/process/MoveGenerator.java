@@ -20,6 +20,7 @@ public class MoveGenerator {
         return null;
     }
 
+    //Ходы без учёта шаха
     public List<Move> getAllMoves(Board board, FigureColor color){
 
         Figure figure;
@@ -30,7 +31,7 @@ public class MoveGenerator {
             for (int i = 0; i < board.getListWhite().size(); i++) {
                 figure = board.getListWhite().get(i);
                 if(figure.getName() == FigureName.PAWN){
-                   moves.addAll(getPawnMoves(FigureColor.WHITE));
+                   moves.addAll(getPawnMoves(FigureColor.WHITE, figure, board));
                 }
             }
         }
@@ -38,8 +39,42 @@ public class MoveGenerator {
         return moves;
     }
 
-    private List<Move> getPawnMoves(FigureColor color) {
+    // Получить ходы пешками
+    private List<Move> getPawnMoves(FigureColor color, Figure figure, Board board) {
+
         List<Move> moves = new ArrayList<>();
+
+        int offset_8 = 8;
+
+        // Из начальной позиции белыми
+        if(figure.getColor() == FigureColor.WHITE && figure.getPosition() >=9 && figure.getPosition() <= 15){
+            // на одну клетку
+            if(checkField(figure.getPosition() + offset_8, board) == null){
+                Move move = new Move(figure, figure.getPosition() + offset_8);
+                moves.add(move);
+            }
+
+            // На две клетки
+            if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
+                Move move = new Move(figure, figure.getPosition() + offset_8);
+                moves.add(move);
+            }
+
+            // На соседней клетке по диагонали вражеская фигура
+            if(checkField(figure.getPosition() + (offset_8 - 1), board) != null &&
+                    checkField(figure.getPosition() + (offset_8 - 1), board).getColor() != figure.getColor()){
+                Move move = new Move(figure, figure.getPosition() + offset_8 - 1);
+                moves.add(move);
+
+            }else if(checkField(figure.getPosition() + (offset_8 + 1), board) != null &&
+                    checkField(figure.getPosition() + (offset_8 + 1), board).getColor() != figure.getColor()){
+                Move move = new Move(figure, figure.getPosition() + offset_8 + 1);
+                moves.add(move);
+            }
+
+            // Взятие на проходе
+
+        }
         return moves;
     }
 }
