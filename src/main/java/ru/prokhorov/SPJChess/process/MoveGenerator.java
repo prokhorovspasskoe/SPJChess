@@ -44,31 +44,36 @@ public class MoveGenerator {
 
         List<Move> moves = new ArrayList<>();
 
-        int offset_8 = 8;
-
         // Из начальной позиции белыми
-        if(figure.getColor() == FigureColor.WHITE && figure.getPosition() >=9 && figure.getPosition() <= 15){
+        if(figure.getColor() == FigureColor.WHITE){
+
+            int offset = figure.getOffset()[4];
             // на одну клетку
-            if(checkField(figure.getPosition() + offset_8, board) == null){
-                Move move = new Move(figure, figure.getPosition() + offset_8);
+            if(checkField(figure.getPosition() + offset, board) == null){
+                Move move = new Move(figure, figure.getPosition() + offset);
                 moves.add(move);
             }
 
             // На две клетки
-            if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
-                Move move = new Move(figure, figure.getPosition() + offset_8);
+            if(figure.getPosition() >=9 && figure.getPosition() <= 15){
+                if(checkField(figure.getPosition() + (offset * 2), board) == null){
+                    Move move = new Move(figure, figure.getPosition() + offset);
+                    moves.add(move);
+                }
+            }
+
+            offset = figure.getOffset()[0];
+            // На соседней клетке по диагонали вражеская фигура
+            if(checkField(figure.getPosition() + offset, board) != null &&
+                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor()){
+                Move move = new Move(figure, figure.getPosition() + offset);
                 moves.add(move);
             }
 
-            // На соседней клетке по диагонали вражеская фигура
-            if(checkField(figure.getPosition() + (offset_8 - 1), board) != null &&
-                    checkField(figure.getPosition() + (offset_8 - 1), board).getColor() != figure.getColor()){
-                Move move = new Move(figure, figure.getPosition() + offset_8 - 1);
-                moves.add(move);
-
-            }else if(checkField(figure.getPosition() + (offset_8 + 1), board) != null &&
-                    checkField(figure.getPosition() + (offset_8 + 1), board).getColor() != figure.getColor()){
-                Move move = new Move(figure, figure.getPosition() + offset_8 + 1);
+            offset = figure.getOffset()[2];
+            if(checkField(figure.getPosition() + offset, board) != null &&
+                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor()){
+                Move move = new Move(figure, figure.getPosition() + offset);
                 moves.add(move);
             }
 
