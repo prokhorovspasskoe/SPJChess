@@ -31,7 +31,7 @@ public class MoveGenerator {
             for (int i = 0; i < board.getListWhite().size(); i++) {
                 figure = board.getListWhite().get(i);
                 if(figure.getName() == FigureName.PAWN){
-                   moves.addAll(getPawnMoves(FigureColor.WHITE, figure, board));
+                   moves.addAll(getPawnMoves(figure, board));
                 }
             }
         }
@@ -40,7 +40,7 @@ public class MoveGenerator {
     }
 
     // Получить ходы пешками
-    private List<Move> getPawnMoves(FigureColor color, Figure figure, Board board) {
+    private List<Move> getPawnMoves(Figure figure, Board board) {
 
         List<Move> moves = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class MoveGenerator {
             }
 
             // На две клетки
-            if(figure.getPosition() >=9 && figure.getPosition() <= 15){
+            if(figure.getPosition() >= 9 && figure.getPosition() <= 15){
                 if(checkField(figure.getPosition() + (offset * 2), board) == null){
                     Move move = new Move(figure, figure.getPosition() + offset);
                     moves.add(move);
