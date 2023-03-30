@@ -65,21 +65,31 @@ public class MoveGenerator {
             offset = figure.getOffset()[0];
             // На соседней клетке по диагонали вражеская фигура
             if(checkField(figure.getPosition() + offset, board) != null &&
-                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor()){
+                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor() &&
+            edgePawn(offset, figure.getPosition())){
                 Move move = new Move(figure, figure.getPosition() + offset);
                 moves.add(move);
             }
 
             offset = figure.getOffset()[2];
             if(checkField(figure.getPosition() + offset, board) != null &&
-                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor()){
+                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor() &&
+                    edgePawn(offset, figure.getPosition())){
                 Move move = new Move(figure, figure.getPosition() + offset);
                 moves.add(move);
             }
 
-            // Взятие на проходе
+
 
         }
         return moves;
+    }
+
+    private boolean edgePawn(int offset, int position){
+        if((position == 8 || position == 16 || position == 24 || position == 34 ||
+        position == 40 || position == 48 || position == 56) && offset == 7) return false;
+        if((position == 15 || position == 23 || position == 31 || position == 39 ||
+                position == 47 || position == 55) && offset == 9) return false;
+        return true;
     }
 }
