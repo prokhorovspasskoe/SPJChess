@@ -1,33 +1,51 @@
 package ru.prokhorov.SPJChess.events;
 
 import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
+import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
+import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 public class Move {
-    Figure figure;
-    int targetField;
+   private FigureName figureName;
+   private FigureColor figureColor;
+   private int startPosition;
+   private int targetPosition;
 
-    public Move(){
-
+    public Move(FigureName figureName, FigureColor figureColor, int startPosition, int targetPosition) {
+        this.figureName = figureName;
+        this.figureColor = figureColor;
+        this.startPosition = startPosition;
+        this.targetPosition = targetPosition;
     }
 
-    public Move(Figure figure, int targetField) {
-        this.figure = figure;
-        this.targetField = targetField;
+    public FigureName getFigureName() {
+        return figureName;
     }
 
-    public Figure getFigure() {
-        return figure;
+    public void setFigureName(FigureName figureName) {
+        this.figureName = figureName;
     }
 
-    public void setFigure(Figure figure) {
-        this.figure = figure;
+    public FigureColor getFigureColor() {
+        return figureColor;
     }
 
-    public int getTargetField() {
-        return targetField;
+    public void setFigureColor(FigureColor figureColor) {
+        this.figureColor = figureColor;
     }
 
-    public void setTargetField(int targetField) {
-        this.targetField = targetField;
+    public int getStartPosition() {
+        return startPosition;
+    }
+
+    public void setStartPosition(int startPosition) {
+        this.startPosition = startPosition;
+    }
+
+    public int getTargetPosition() {
+        return targetPosition;
+    }
+
+    public void setTargetPosition(int targetPosition) {
+        this.targetPosition = targetPosition;
     }
 }

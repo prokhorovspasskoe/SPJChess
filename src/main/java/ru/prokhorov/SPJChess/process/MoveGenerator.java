@@ -25,7 +25,6 @@ public class MoveGenerator {
 
         Figure figure;
         List<Move> moves = new ArrayList<>();
-        Move move = new Move();
 
         if(color == FigureColor.WHITE){
             for (int i = 0; i < board.getListWhite().size(); i++) {
@@ -43,46 +42,119 @@ public class MoveGenerator {
     private List<Move> getPawnMoves(Figure figure, Board board) {
 
         List<Move> moves = new ArrayList<>();
+        WriterGame writerGame = new WriterGame();
+        int offset_8 = 0;
+        int offset_7 = 0;
+        int offset_9 = 0;
+        int start = 0;
+        int end = 0;
+        int beginDoPosition = 0;
+        int endDoPosition = 0;
+        int interference = 0;
+        int startOpp = 0;
+        int endOpp = 0;
+        int startTargetPos = 0;
+        int endTargetPos = 0;
 
         // Из начальной позиции белыми
         if(figure.getColor() == FigureColor.WHITE){
-
-            int offset = figure.getOffset()[4];
-            // на одну клетку
-            if(checkField(figure.getPosition() + offset, board) == null){
-                Move move = new Move(figure, figure.getPosition() + offset);
-                moves.add(move);
-            }
-
-            // На две клетки
-            if(figure.getPosition() >= 9 && figure.getPosition() <= 15){
-                if(checkField(figure.getPosition() + (offset * 2), board) == null){
-                    Move move = new Move(figure, figure.getPosition() + offset);
-                    moves.add(move);
-                }
-            }
-
-            offset = figure.getOffset()[0];
-            // На соседней клетке по диагонали вражеская фигура
-            if(checkField(figure.getPosition() + offset, board) != null &&
-                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor() &&
-            edgePawn(offset, figure.getPosition())){
-                Move move = new Move(figure, figure.getPosition() + offset);
-                moves.add(move);
-            }
-
-            offset = figure.getOffset()[2];
-            if(checkField(figure.getPosition() + offset, board) != null &&
-                    checkField(figure.getPosition() + offset, board).getColor() != figure.getColor() &&
-                    edgePawn(offset, figure.getPosition())){
-                Move move = new Move(figure, figure.getPosition() + offset);
-                moves.add(move);
-            }
-
-
-
+            offset_8 = figure.getOffset()[4];
+            offset_7 = figure.getOffset()[0];
+            offset_9 = figure.getOffset()[2];
+            start = 8;
+            end = 15;
+            beginDoPosition = 32;
+            endDoPosition = 39;
+            startOpp = 48;
+            endOpp = 55;
+            startTargetPos = 32;
+            endTargetPos = 39;
+            interference = 16;
         }
+
+        if(figure.getColor() == FigureColor.BLACK){
+            offset_8 = figure.getOffset()[5];
+            offset_7 = figure.getOffset()[1];
+            offset_9 = figure.getOffset()[3];
+            start = 48;
+            end = 55;
+            beginDoPosition = 24;
+            endDoPosition = 31;
+            startOpp = 8;
+            endOpp = 15;
+            startTargetPos = 24;
+            endTargetPos = 31;
+            interference = -16;
+        }
+
+        Move move;
+
+        if(checkField(figure.getPosition() + offset_8, board) == null){
+            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                    figure.getPosition() + offset_8);
+            writerGame.setMove(move);
+            moves.add(move);
+        }
+
+        if(figure.getPosition() >= start && figure.getPosition() <= end){
+            if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                        figure.getPosition() + offset_8);
+                writerGame.setMove(move);
+                moves.add(move);
+            }
+        }
+
+        // На соседней клетке по диагонали вражеская фигура
+        if(checkField(figure.getPosition() + offset_7, board) != null &&
+                checkField(figure.getPosition() + offset_7, board).getColor() != figure.getColor() &&
+                edgePawn(offset_7, figure.getPosition())){
+            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                    figure.getPosition() + offset_7);
+            writerGame.setMove(move);
+            moves.add(move);
+        }
+
+        if(checkField(figure.getPosition() + offset_9, board) != null &&
+                checkField(figure.getPosition() + offset_9, board).getColor() != figure.getColor() &&
+                edgePawn(offset_9, figure.getPosition())){
+            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                    figure.getPosition() + offset_9);
+            writerGame.setMove(move);
+            moves.add(move);
+        }
+
+        if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
+                checkField(figure.getPosition() + offset_7, board) != null){
+
+            takingOnThePass(figure, moves, writerGame, offset_7, interference, startOpp, endOpp, startTargetPos, endTargetPos);
+        }
+
+        if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
+                checkField(figure.getPosition() + offset_9, board) != null){
+
+           takingOnThePass(figure, moves, writerGame, offset_9, interference, startOpp, endOpp, startTargetPos, endTargetPos);
+        }
+
         return moves;
+    }
+
+    private void takingOnThePass(Figure figure, List<Move> moves, WriterGame writerGame, int offset, int interference,
+                                 int startOpp, int endOpp, int startTargetPos, int endTargetPos) {
+        Move move;
+        int len = writerGame.getFormRecording().size();
+
+        if(writerGame.getMove(len).getFigureName() == FigureName.PAWN &&
+                writerGame.getMove(len).getStartPosition() >= startOpp &&
+                writerGame.getMove(len).getStartPosition() != figure.getPosition() + interference &&
+                writerGame.getMove(len).getStartPosition() <= endOpp &&
+                writerGame.getMove(len).getTargetPosition() >= startTargetPos &&
+                writerGame.getMove(len).getTargetPosition() <= endTargetPos){
+            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                    figure.getPosition() + offset);
+            writerGame.setMove(move);
+            moves.add(move);
+        }
     }
 
     private boolean edgePawn(int offset, int position){
