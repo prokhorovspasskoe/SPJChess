@@ -21,28 +21,52 @@ public class MoveGenerator {
     }
 
     //Ходы без учёта шаха
-    public List<Move> getAllMoves(Board board, FigureColor color){
+    public List<Move> getAllMoves(Board board, FigureColor turn){
 
-        Figure figure;
         List<Move> moves = new ArrayList<>();
+        List<Figure> figures;
 
-        if(color == FigureColor.WHITE){
-            for (int i = 0; i < board.getListWhite().size(); i++) {
-                figure = board.getListWhite().get(i);
-                if(figure.getName() == FigureName.PAWN){
-                   moves.addAll(getPawnMoves(figure, board));
-                }
+        if(turn == FigureColor.WHITE){
+            figures = board.getListWhite();
+        }else{
+            figures = board.getListBlack();
+        }
+
+        for (Figure figure : figures) {
+            if (figure.getName() == FigureName.PAWN) {
+                moves.addAll(getPawnMoves(figure, board));
+            }
+
+            if(figure.getName() == FigureName.KNIGHT){
+                moves.addAll(getKnightMoves(figure, board));
             }
         }
 
         return moves;
     }
 
+    private List<Move> getKnightMoves(Figure figure, Board board) {
+        List<Move> knightMovesList = new ArrayList<>();
+        int loop = figure.getOffset().length;
+        Move move;
+
+        for (int i = 0; i < loop; i++) {
+            if(figure.getPosition() + figure.getOffset()[i] >= 0 &&
+                    figure.getPosition() + figure.getOffset()[i] <= 63 &&
+                    (checkField(figure.getPosition() + figure.getOffset()[i], board).getColor() != figure.getColor() ||
+                    checkField(figure.getPosition() + figure.getOffset()[i], board) == null)){
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                        figure.getPosition() + figure.getOffset()[i]);
+                knightMovesList.add(move);
+            }
+        }
+        return knightMovesList;
+    }
+
     // Получить ходы пешками
     private List<Move> getPawnMoves(Figure figure, Board board) {
 
         List<Move> moves = new ArrayList<>();
-        WriterGame writerGame = new WriterGame();
         int offset_8 = 0;
         int offset_7 = 0;
         int offset_9 = 0;
@@ -92,7 +116,7 @@ public class MoveGenerator {
         if(checkField(figure.getPosition() + offset_8, board) == null){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_8);
-            writerGame.setMove(move);
+            board.setRecord(move);
             moves.add(move);
         }
 
@@ -100,7 +124,7 @@ public class MoveGenerator {
             if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                         figure.getPosition() + offset_8);
-                writerGame.setMove(move);
+                board.setRecord(move);
                 moves.add(move);
             }
         }
@@ -111,7 +135,7 @@ public class MoveGenerator {
                 edgePawn(offset_7, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_7);
-            writerGame.setMove(move);
+            board.setRecord(move);
             moves.add(move);
         }
 
@@ -120,39 +144,39 @@ public class MoveGenerator {
                 edgePawn(offset_9, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_9);
-            writerGame.setMove(move);
+            board.setRecord(move);
             moves.add(move);
         }
 
         if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
                 checkField(figure.getPosition() + offset_7, board) != null){
 
-            takingOnThePass(figure, moves, writerGame, offset_7, interference, startOpp, endOpp, startTargetPos, endTargetPos);
+            takingOnThePass(figure, moves, board, offset_7, interference, startOpp, endOpp, startTargetPos, endTargetPos);
         }
 
         if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
                 checkField(figure.getPosition() + offset_9, board) != null){
 
-           takingOnThePass(figure, moves, writerGame, offset_9, interference, startOpp, endOpp, startTargetPos, endTargetPos);
+           takingOnThePass(figure, moves, board, offset_9, interference, startOpp, endOpp, startTargetPos, endTargetPos);
         }
 
         return moves;
     }
 
-    private void takingOnThePass(Figure figure, List<Move> moves, WriterGame writerGame, int offset, int interference,
+    private void takingOnThePass(Figure figure, List<Move> moves, Board board, int offset, int interference,
                                  int startOpp, int endOpp, int startTargetPos, int endTargetPos) {
         Move move;
-        int len = writerGame.getFormRecording().size();
+        int len = board.getFormRecording().size();
 
-        if(writerGame.getMove(len).getFigureName() == FigureName.PAWN &&
-                writerGame.getMove(len).getStartPosition() >= startOpp &&
-                writerGame.getMove(len).getStartPosition() != figure.getPosition() + interference &&
-                writerGame.getMove(len).getStartPosition() <= endOpp &&
-                writerGame.getMove(len).getTargetPosition() >= startTargetPos &&
-                writerGame.getMove(len).getTargetPosition() <= endTargetPos){
+        if(board.getRecord(len).getFigureName() == FigureName.PAWN &&
+                board.getRecord(len).getStartPosition() >= startOpp &&
+                board.getRecord(len).getStartPosition() != figure.getPosition() + interference &&
+                board.getRecord(len).getStartPosition() <= endOpp &&
+                board.getRecord(len).getTargetPosition() >= startTargetPos &&
+                board.getRecord(len).getTargetPosition() <= endTargetPos){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset);
-            writerGame.setMove(move);
+            board.setRecord(move);
             moves.add(move);
         }
     }

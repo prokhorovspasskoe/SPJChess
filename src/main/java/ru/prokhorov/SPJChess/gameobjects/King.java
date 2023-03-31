@@ -5,11 +5,6 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 public class King extends Figure {
-    FigureName name;
-    FigureColor color;
-    int weight;
-    int position;
-    int [] offset;
 
     public King(FigureColor color, int position) {
         this.color = color;
