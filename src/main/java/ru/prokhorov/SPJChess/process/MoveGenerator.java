@@ -7,7 +7,6 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MoveGenerator {
@@ -70,7 +69,6 @@ public class MoveGenerator {
                         checkField(toField, board).getColor() != figure.getColor()){
                     Move move = new Move(figure.getName(), figure.getColor(),
                             figure.getPosition(), figure.getPosition() + toField);
-                    board.setRecord(move);
                     bishopMovesList.add(move);
                     break;
                 }
@@ -78,7 +76,6 @@ public class MoveGenerator {
                 if(checkField(figure.getPosition() + figure.getOffset()[i], board) == null){
                     Move move = new Move(figure.getName(), figure.getColor(),
                             figure.getPosition(), figure.getPosition() + toField);
-                    board.setRecord(move);
                     bishopMovesList.add(move);
                 }
             }
@@ -100,7 +97,6 @@ public class MoveGenerator {
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                         figure.getPosition() + figure.getOffset()[i]);
                 knightMovesList.add(move);
-                board.setRecord(move);
             }
         }
         return knightMovesList;
@@ -159,7 +155,6 @@ public class MoveGenerator {
         if(checkField(figure.getPosition() + offset_8, board) == null){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_8);
-            board.setRecord(move);
             moves.add(move);
         }
 
@@ -167,7 +162,6 @@ public class MoveGenerator {
             if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                         figure.getPosition() + offset_8);
-                board.setRecord(move);
                 moves.add(move);
             }
         }
@@ -178,7 +172,6 @@ public class MoveGenerator {
                 edgePawn(offset_7, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_7);
-            board.setRecord(move);
             moves.add(move);
         }
 
@@ -187,7 +180,6 @@ public class MoveGenerator {
                 edgePawn(offset_9, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_9);
-            board.setRecord(move);
             moves.add(move);
         }
 
@@ -219,7 +211,6 @@ public class MoveGenerator {
                 board.getRecord(len).getTargetPosition() <= endTargetPos){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset);
-            board.setRecord(move);
             moves.add(move);
         }
     }

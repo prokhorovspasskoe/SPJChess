@@ -1,6 +1,5 @@
 package ru.prokhorov.SPJChess.events;
 
-import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
@@ -10,11 +9,14 @@ public class Move {
    private int startPosition;
    private int targetPosition;
 
+   private boolean isCheck;
+
     public Move(FigureName figureName, FigureColor figureColor, int startPosition, int targetPosition) {
         this.figureName = figureName;
         this.figureColor = figureColor;
         this.startPosition = startPosition;
         this.targetPosition = targetPosition;
+        this.isCheck = false;
     }
 
     public FigureName getFigureName() {
@@ -47,5 +49,13 @@ public class Move {
 
     public void setTargetPosition(int targetPosition) {
         this.targetPosition = targetPosition;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }
