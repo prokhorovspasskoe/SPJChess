@@ -7,6 +7,7 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MoveGenerator {
@@ -40,9 +41,50 @@ public class MoveGenerator {
             if(figure.getName() == FigureName.KNIGHT){
                 moves.addAll(getKnightMoves(figure, board));
             }
+
+            if(figure.getName() == FigureName.BISHOP){
+                moves.addAll(getBishopMoves(figure, board));
+            }
         }
 
         return moves;
+    }
+
+    private List<Move> getBishopMoves(Figure figure, Board board) {
+        List<Move> bishopMovesList = new ArrayList<>();
+
+        int loop = figure.getOffset().length;
+        int toField = 0;
+
+        for (int i = 0; i < loop; i++) {
+            for (int j = 0; j < figure.getOffset()[i]; j++) {
+
+                if(j == 0) toField = figure.getPosition() + figure.getOffset()[i];
+                if(j == 1) toField = figure.getPosition() + (figure.getOffset()[i] * 2);
+                if(j > 1) toField = figure.getPosition() + (figure.getOffset()[i] * j);
+
+                if(checkField(toField, board) != null &&
+                        checkField(toField, board).getColor() == figure.getColor()) break;
+
+                if(checkField(toField, board) != null &&
+                        checkField(toField, board).getColor() != figure.getColor()){
+                    Move move = new Move(figure.getName(), figure.getColor(),
+                            figure.getPosition(), figure.getPosition() + toField);
+                    board.setRecord(move);
+                    bishopMovesList.add(move);
+                    break;
+                }
+
+                if(checkField(figure.getPosition() + figure.getOffset()[i], board) == null){
+                    Move move = new Move(figure.getName(), figure.getColor(),
+                            figure.getPosition(), figure.getPosition() + toField);
+                    board.setRecord(move);
+                    bishopMovesList.add(move);
+                }
+            }
+        }
+
+        return bishopMovesList;
     }
 
     private List<Move> getKnightMoves(Figure figure, Board board) {
@@ -54,10 +96,11 @@ public class MoveGenerator {
             if(figure.getPosition() + figure.getOffset()[i] >= 0 &&
                     figure.getPosition() + figure.getOffset()[i] <= 63 &&
                     (checkField(figure.getPosition() + figure.getOffset()[i], board).getColor() != figure.getColor() ||
-                    checkField(figure.getPosition() + figure.getOffset()[i], board) == null)){
+                            checkField(figure.getPosition() + figure.getOffset()[i], board) == null)){
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                         figure.getPosition() + figure.getOffset()[i]);
                 knightMovesList.add(move);
+                board.setRecord(move);
             }
         }
         return knightMovesList;
