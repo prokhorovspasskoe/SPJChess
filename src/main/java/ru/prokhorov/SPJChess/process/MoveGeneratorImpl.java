@@ -5,11 +5,14 @@ import ru.prokhorov.SPJChess.gameobjects.Board;
 import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
+import ru.prokhorov.SPJChess.process.interfaces.MoveGenerator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class MoveGenerator {
+public class MoveGeneratorImpl implements MoveGenerator {
+    @Override
     public Figure checkField(int field, Board board){
         for (int i = 0; i < board.getListWhite().size(); i++) {
             if(field == board.getListWhite().get(i).getPosition()) return board.getListWhite().get(i);
@@ -21,12 +24,13 @@ public class MoveGenerator {
     }
 
     //Ходы без учёта шаха
-    public List<Move> getAllMoves(Board board, FigureColor turn){
+    @Override
+    public List<Move> getAllMoves(Board board){
 
         List<Move> moves = new ArrayList<>();
         List<Figure> figures;
 
-        if(turn == FigureColor.WHITE){
+        if(board.getTurn() == FigureColor.WHITE){
             figures = board.getListWhite();
         }else{
             figures = board.getListBlack();
@@ -42,20 +46,88 @@ public class MoveGenerator {
             }
 
             if(figure.getName() == FigureName.BISHOP){
-                moves.addAll(getBishopMoves(figure, board));
+                moves.addAll(getBishopRookQueenMoves(figure, board));
+            }
+
+            if(figure.getName() == FigureName.ROOK){
+                moves.addAll(getBishopRookQueenMoves(figure, board));
+            }
+
+            if(figure.getName() == FigureName.QUEEN){
+                moves.addAll(getBishopRookQueenMoves(figure, board));
+            }
+
+            if(figure.getName() == FigureName.KING){
+                moves.addAll(getKingMoves(figure, board));
             }
         }
 
         return moves;
     }
 
-    private List<Move> getBishopMoves(Figure figure, Board board) {
+    private List<Move> getKingMoves(Figure figure, Board board) {
+        List<Move> kingMovesList = new ArrayList<>();
+        int loop = figure.getOffset().length;
+        int toField = 0;
+        List<Integer> brokenFields;
+
+        if(figure.getColor() == FigureColor.WHITE) {
+            brokenFields = board.getBrokenFieldsBlack();
+        }else{
+            brokenFields = board.getBrokenFieldsWhite();
+        }
+
+
+        for (int i = 0; i < loop; i++){
+            toField = figure.getPosition() + figure.getOffset()[i];
+
+            // Ход на свободную клетку не под боем.
+            if(checkField(toField, board) == null){
+
+                for (Integer brokenField: brokenFields) {
+                    if(toField != brokenField){
+                        Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                        kingMovesList.add(move);
+
+                        if(figure.getColor() == FigureColor.WHITE){
+                            board.setBrokenFieldWhite(toField);
+                        }else{
+                            board.setBrokenFieldBlack(toField);
+                        }
+                    }
+                }
+            }
+
+            // Убить фигуру противника не под боем.
+            if(checkField(toField, board) != null &&
+                    checkField(toField, board).getColor() != figure.getColor()){
+
+                for (Integer brokenField: brokenFields) {
+                    if(toField != brokenField){
+                        Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                        kingMovesList.add(move);
+
+                        if(figure.getColor() == FigureColor.WHITE){
+                            board.setBrokenFieldWhite(toField);
+                        }else{
+                            board.setBrokenFieldBlack(toField);
+                        }
+                    }
+                }
+            }
+        }
+
+        return kingMovesList;
+    }
+
+    private List<Move> getBishopRookQueenMoves(Figure figure, Board board) {
         List<Move> bishopMovesList = new ArrayList<>();
 
         int loop = figure.getOffset().length;
         int toField = 0;
 
         for (int i = 0; i < loop; i++) {
+
             for (int j = 0; j < figure.getOffset()[i]; j++) {
 
                 if(j == 0) toField = figure.getPosition() + figure.getOffset()[i];
@@ -63,19 +135,38 @@ public class MoveGenerator {
                 if(j > 1) toField = figure.getPosition() + (figure.getOffset()[i] * j);
 
                 if(checkField(toField, board) != null &&
-                        checkField(toField, board).getColor() == figure.getColor()) break;
+                        checkField(toField, board).getColor() == figure.getColor()){
+                    if(figure.getColor() == FigureColor.WHITE){
+                        board.setBrokenFieldWhite(toField);
+                    }else{
+                        board.setBrokenFieldBlack(toField);
+                    }
+                    break;
+                }
 
                 if(checkField(toField, board) != null &&
                         checkField(toField, board).getColor() != figure.getColor()){
-                    Move move = new Move(figure.getName(), figure.getColor(),
-                            figure.getPosition(), figure.getPosition() + toField);
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                     bishopMovesList.add(move);
                     break;
                 }
 
-                if(checkField(figure.getPosition() + figure.getOffset()[i], board) == null){
-                    Move move = new Move(figure.getName(), figure.getColor(),
-                            figure.getPosition(), figure.getPosition() + toField);
+                if(checkField(toField, board) != null &&
+                        checkField(toField, board).getColor() != figure.getColor() &&
+                        checkField(toField, board).getName() == FigureName.KING){
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    move.setCheck(true);
+                    bishopMovesList.add(move);
+                    break;
+                }
+
+                if(checkField(toField, board) == null){
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    if(figure.getColor() == FigureColor.WHITE){
+                        board.setBrokenFieldWhite(toField);
+                    }else{
+                        board.setBrokenFieldBlack(toField);
+                    }
                     bishopMovesList.add(move);
                 }
             }
@@ -87,15 +178,49 @@ public class MoveGenerator {
     private List<Move> getKnightMoves(Figure figure, Board board) {
         List<Move> knightMovesList = new ArrayList<>();
         int loop = figure.getOffset().length;
+        int toField = 0;
         Move move;
 
         for (int i = 0; i < loop; i++) {
-            if(figure.getPosition() + figure.getOffset()[i] >= 0 &&
-                    figure.getPosition() + figure.getOffset()[i] <= 63 &&
-                    (checkField(figure.getPosition() + figure.getOffset()[i], board).getColor() != figure.getColor() ||
-                            checkField(figure.getPosition() + figure.getOffset()[i], board) == null)){
-                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
-                        figure.getPosition() + figure.getOffset()[i]);
+            toField = figure.getPosition() + figure.getOffset()[i];
+            if(toField >= 0 && toField <= 63 &&
+                    (checkField(toField, board).getColor() != figure.getColor() ||
+                            checkField(toField, board) == null)){
+                if(checkField(toField, board) == null){
+                    if(figure.getColor() == FigureColor.WHITE){
+                        board.setBrokenFieldWhite(toField);
+                    }else{
+                        board.setBrokenFieldBlack(toField);
+                    }
+                }
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                knightMovesList.add(move);
+            }
+
+            if(toField >= 0 && toField <= 63 &&
+                    (checkField(toField, board).getColor() != figure.getColor() &&
+                            checkField(toField, board).getName() == FigureName.KING)){
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                move.setCheck(true);
+                knightMovesList.add(move);
+            }
+
+            if(toField >= 0 && toField <= 63 &&
+                    (checkField(toField, board).getColor() == figure.getColor())){
+                if(figure.getColor() == FigureColor.WHITE){
+                    board.setBrokenFieldWhite(toField);
+                }else{
+                    board.setBrokenFieldBlack(toField);
+                }
+            }
+
+            if(toField >= 0 && toField <= 63 && (checkField(toField, board) == null)){
+                if(figure.getColor() == FigureColor.WHITE){
+                    board.setBrokenFieldWhite(toField);
+                }else{
+                    board.setBrokenFieldBlack(toField);
+                }
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                 knightMovesList.add(move);
             }
         }
@@ -172,7 +297,18 @@ public class MoveGenerator {
                 edgePawn(offset_7, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_7);
+            if(checkField(figure.getPosition() + offset_7, board).getName() == FigureName.KING) move.setCheck(true);
             moves.add(move);
+        }
+
+        if(checkField(figure.getPosition() + offset_7, board) != null &&
+                checkField(figure.getPosition() + offset_7, board).getColor() == figure.getColor() &&
+                edgePawn(offset_7, figure.getPosition())){
+            if(figure.getColor() == FigureColor.WHITE){
+                board.setBrokenFieldWhite(figure.getPosition() + offset_7);
+            }else{
+                board.setBrokenFieldBlack(figure.getPosition() + offset_7);
+            }
         }
 
         if(checkField(figure.getPosition() + offset_9, board) != null &&
@@ -180,7 +316,18 @@ public class MoveGenerator {
                 edgePawn(offset_9, figure.getPosition())){
             move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
                     figure.getPosition() + offset_9);
+            if(checkField(figure.getPosition() + offset_9, board).getName() == FigureName.KING) move.setCheck(true);
             moves.add(move);
+        }
+
+        if(checkField(figure.getPosition() + offset_9, board) != null &&
+                checkField(figure.getPosition() + offset_9, board).getColor() == figure.getColor() &&
+                edgePawn(offset_9, figure.getPosition())){
+            if(figure.getColor() == FigureColor.WHITE){
+                board.setBrokenFieldWhite(figure.getPosition() + offset_9);
+            }else{
+                board.setBrokenFieldBlack(figure.getPosition() + offset_9);
+            }
         }
 
         if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&

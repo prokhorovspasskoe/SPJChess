@@ -10,6 +10,9 @@ public class Board {
     private List<Figure> listWhite;
     private List<Figure> listBlack;
     private List<Move> formRecording;
+    private List<Integer> brokenFieldsWhite;
+
+    private List<Integer> brokenFieldsBlack;
     int remainingTime;
     FigureColor turn;
 
@@ -59,5 +62,21 @@ public class Board {
 
     public void setRecord(Move move){
         this.formRecording.add(move);
+    }
+
+    public List<Integer> getBrokenFieldsWhite() {
+        return brokenFieldsWhite;
+    }
+
+    public void setBrokenFieldWhite(Integer brokenFieldsWhite) {
+        this.brokenFieldsWhite.add(brokenFieldsWhite);
+    }
+
+    public List<Integer> getBrokenFieldsBlack() {
+        return brokenFieldsBlack;
+    }
+
+    public void setBrokenFieldBlack(Integer brokenFieldBlack) {
+        this.brokenFieldsBlack.add(brokenFieldBlack);
     }
 }
