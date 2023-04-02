@@ -181,43 +181,45 @@ public class MoveGeneratorImpl implements MoveGenerator {
 
         for (int i = 0; i < loop; i++) {
             toField = figure.getPosition() + figure.getOffset()[i];
-            if(toField >= 0 && toField <= 63 &&
-                    (checkField(toField, board).getColor() != figure.getColor() ||
-                            checkField(toField, board) == null)){
-                if(checkField(toField, board) == null){
-                    if(figure.getColor() == FigureColor.WHITE){
-                        board.setBrokenFieldWhite(toField);
-                    }else{
-                        board.setBrokenFieldBlack(toField);
+
+            if (toField < 0 || toField > 63) continue;
+
+            if(figure.getOffset()[i] == 6){
+                switch (figure.getPosition()) {
+                    case 0, 1, 8, 9, 16, 17, 24, 25, 32, 33, 40, 41, 48, 49, 56, 57 -> {
+                        continue;
                     }
+                }
+            }
+
+            if(figure.getOffset()[i] == - 6){
+                switch (figure.getPosition()) {
+                    case 6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63 -> {
+                        continue;
+                    }
+                }
+            }
+
+            if (checkField(toField, board) == null) {
+                if (figure.getColor() == FigureColor.WHITE) {
+                    board.setBrokenFieldWhite(toField);
+                } else {
+                    board.setBrokenFieldBlack(toField);
                 }
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                 knightMovesList.add(move);
             }
 
-            if(toField >= 0 && toField <= 63 &&
-                    (checkField(toField, board).getColor() != figure.getColor() &&
-                            checkField(toField, board).getName() == FigureName.KING)){
+            if ((checkField(toField, board) != null &&
+                    checkField(toField, board).getColor() != figure.getColor() &&
+                    checkField(toField, board).getName() == FigureName.KING)) {
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                 move.setCheck(true);
                 knightMovesList.add(move);
             }
 
-            if(toField >= 0 && toField <= 63 &&
-                    (checkField(toField, board).getColor() == figure.getColor())){
-                if(figure.getColor() == FigureColor.WHITE){
-                    board.setBrokenFieldWhite(toField);
-                }else{
-                    board.setBrokenFieldBlack(toField);
-                }
-            }
-
-            if(toField >= 0 && toField <= 63 && (checkField(toField, board) == null)){
-                if(figure.getColor() == FigureColor.WHITE){
-                    board.setBrokenFieldWhite(toField);
-                }else{
-                    board.setBrokenFieldBlack(toField);
-                }
+            if(checkField(toField, board) != null &&
+                    checkField(toField, board).getColor() != figure.getColor() ){
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                 knightMovesList.add(move);
             }

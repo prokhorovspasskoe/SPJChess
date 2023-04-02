@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.prokhorov.SPJChess.events.Move;
 import ru.prokhorov.SPJChess.gameobjects.Board;
+import ru.prokhorov.SPJChess.gameobjects.Knight;
 import ru.prokhorov.SPJChess.gameobjects.Pawn;
 import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
@@ -19,19 +20,17 @@ public class SpjChessApplication {
 		SpringApplication.run(SpjChessApplication.class, args);
 
 		Board board = new Board();
-		Figure pawn = new Pawn(FigureColor.WHITE, 33);
-		Figure pawn2 = new Pawn(FigureColor.BLACK, 42);
-//		Move move = new Move(FigureName.PAWN, FigureColor.BLACK, 48, 32);
-//		board.setRecord(move);
-		board.getListWhite().add(pawn);
-		board.getListBlack().add(pawn2);
+		Figure knight = new Knight(FigureColor.WHITE, 19);
+		board.getListWhite().add(knight);
+		//board.setTurn(FigureColor.BLACK);
 		board.setTurn(FigureColor.WHITE);
 		MoveGenerator moveGenerator = new MoveGeneratorImpl();
 		List<Move> moveList = moveGenerator.getAllMoves(board);
 		System.out.println(moveList);
-		System.out.println(moveList.get(0).getStartPosition());
-		System.out.println(moveList.get(0).getTargetPosition());
-		System.out.println(moveList.get(1).getStartPosition());
-		System.out.println(moveList.get(1).getTargetPosition());
+
+		for (Move move: moveList) {
+			System.out.println(move.getStartPosition());
+			System.out.println(move.getTargetPosition());
+		}
 	}
 }
