@@ -6,9 +6,7 @@ import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 import ru.prokhorov.SPJChess.process.interfaces.MoveGenerator;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MoveGeneratorImpl implements MoveGenerator {
@@ -284,9 +282,10 @@ public class MoveGeneratorImpl implements MoveGenerator {
         }
 
         if(figure.getPosition() >= start && figure.getPosition() <= end){
-            if(checkField(figure.getPosition() + (offset_8 * 2), board) == null){
+            if(checkField(figure.getPosition() + (offset_8 * 2), board) == null &&
+                    checkField(figure.getPosition() + offset_8, board) == null){
                 move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
-                        figure.getPosition() + offset_8);
+                        figure.getPosition() + (offset_8 * 2));
                 moves.add(move);
             }
         }
@@ -330,16 +329,15 @@ public class MoveGeneratorImpl implements MoveGenerator {
             }
         }
 
-        if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
-                checkField(figure.getPosition() + offset_7, board) != null){
-
+        if(figure.getPosition() > beginDoPosition && figure.getPosition() <= endDoPosition &&
+                checkField(figure.getPosition() + offset_7, board) == null && edgePawn(offset_7, figure.getPosition())){
             takingOnThePass(figure, moves, board, offset_7, interference, startOpp, endOpp, startTargetPos, endTargetPos);
         }
 
-        if(figure.getPosition() >= beginDoPosition && figure.getPosition() <= endDoPosition &&
-                checkField(figure.getPosition() + offset_9, board) != null){
-
-           takingOnThePass(figure, moves, board, offset_9, interference, startOpp, endOpp, startTargetPos, endTargetPos);
+        if(figure.getPosition() >= beginDoPosition && figure.getPosition() < endDoPosition &&
+                checkField(figure.getPosition() + offset_9, board) == null &&
+                edgePawn(offset_9, figure.getPosition())){
+            takingOnThePass(figure, moves, board, offset_9, interference, startOpp, endOpp, startTargetPos, endTargetPos);
         }
 
         return moves;
@@ -347,18 +345,20 @@ public class MoveGeneratorImpl implements MoveGenerator {
 
     private void takingOnThePass(Figure figure, List<Move> moves, Board board, int offset, int interference,
                                  int startOpp, int endOpp, int startTargetPos, int endTargetPos) {
-        Move move;
-        int len = board.getFormRecording().size();
+        if(board.getFormRecording().size() > 0){
+            Move move;
+            int len = board.getFormRecording().size() - 1;
 
-        if(board.getRecord(len).getFigureName() == FigureName.PAWN &&
-                board.getRecord(len).getStartPosition() >= startOpp &&
-                board.getRecord(len).getStartPosition() != figure.getPosition() + interference &&
-                board.getRecord(len).getStartPosition() <= endOpp &&
-                board.getRecord(len).getTargetPosition() >= startTargetPos &&
-                board.getRecord(len).getTargetPosition() <= endTargetPos){
-            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
-                    figure.getPosition() + offset);
-            moves.add(move);
+            if(board.getRecord(len).getFigureName() == FigureName.PAWN &&
+                    board.getRecord(len).getStartPosition() >= startOpp &&
+                    board.getRecord(len).getStartPosition() != figure.getPosition() + interference &&
+                    board.getRecord(len).getStartPosition() <= endOpp &&
+                    board.getRecord(len).getTargetPosition() >= startTargetPos &&
+                    board.getRecord(len).getTargetPosition() <= endTargetPos){
+                move = new Move(figure.getName(), figure.getColor(), figure.getPosition(),
+                        figure.getPosition() + offset);
+                moves.add(move);
+            }
         }
     }
 

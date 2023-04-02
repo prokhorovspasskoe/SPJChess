@@ -4,6 +4,7 @@ import ru.prokhorov.SPJChess.events.Move;
 import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
@@ -15,6 +16,14 @@ public class Board {
     private List<Integer> brokenFieldsBlack;
     int remainingTime;
     FigureColor turn;
+
+    public Board() {
+        this.listWhite = new ArrayList<>();
+        this.listBlack = new ArrayList<>();
+        this.formRecording = new ArrayList<>();
+        this.brokenFieldsWhite = new ArrayList<>();
+        this.brokenFieldsBlack = new ArrayList<>();
+    }
 
     public List<Figure> getListWhite() {
         return listWhite;
