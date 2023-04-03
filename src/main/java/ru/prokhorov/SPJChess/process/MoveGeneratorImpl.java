@@ -79,21 +79,39 @@ public class MoveGeneratorImpl implements MoveGenerator {
         for (int i = 0; i < loop; i++){
             toField = figure.getPosition() + figure.getOffset()[i];
 
+            if(toField < 0 || toField > 63) continue;
+
+            boolean broken = false;
+
             // Ход на свободную клетку не под боем.
             if(checkField(toField, board) == null){
 
                 for (Integer brokenField: brokenFields) {
-                    if(toField != brokenField){
-                        Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
-                        kingMovesList.add(move);
-
-                        if(figure.getColor() == FigureColor.WHITE){
-                            board.setBrokenFieldWhite(toField);
-                        }else{
-                            board.setBrokenFieldBlack(toField);
-                        }
+                    if(toField == brokenField){
+                        broken = true;
+                        break;
                     }
                 }
+
+                if(!broken){
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    kingMovesList.add(move);
+                    if(figure.getColor() == FigureColor.WHITE){
+                        board.setBrokenFieldWhite(toField);
+                    }else{
+                        board.setBrokenFieldBlack(toField);
+                    }
+                }
+            }
+
+            if(checkField(toField, board) != null &&
+                    checkField(toField, board).getColor() == figure.getColor()){
+                if(figure.getColor() == FigureColor.WHITE){
+                    board.setBrokenFieldWhite(toField);
+                }else{
+                    board.setBrokenFieldBlack(toField);
+                }
+                break;
             }
 
             // Убить фигуру противника не под боем.
@@ -101,15 +119,19 @@ public class MoveGeneratorImpl implements MoveGenerator {
                     checkField(toField, board).getColor() != figure.getColor()){
 
                 for (Integer brokenField: brokenFields) {
-                    if(toField != brokenField){
-                        Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
-                        kingMovesList.add(move);
+                    if(toField == brokenField){
+                       broken = true;
+                       break;
+                    }
+                }
 
-                        if(figure.getColor() == FigureColor.WHITE){
-                            board.setBrokenFieldWhite(toField);
-                        }else{
-                            board.setBrokenFieldBlack(toField);
-                        }
+                if(!broken){
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    kingMovesList.add(move);
+                    if(figure.getColor() == FigureColor.WHITE){
+                        board.setBrokenFieldWhite(toField);
+                    }else{
+                        board.setBrokenFieldBlack(toField);
                     }
                 }
             }
@@ -125,6 +147,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
         int toField = 0;
         int iter = 0;
         boolean gep;
+        boolean generated = false;
 
         for (int i = 0; i < loop; i++) {
 
@@ -144,13 +167,27 @@ public class MoveGeneratorImpl implements MoveGenerator {
 
                     if(figure.getOffset()[i] == 8 || figure.getOffset()[i] == -8) break;
 
-                    if((figure.getOffset()[i] == 1  || figure.getOffset()[i] == -1) &&
-                            toField - figure.getPosition() < 7 - figure.getPosition()) break;
+                    if(figure.getOffset()[i] == 1 || figure.getOffset()[i] == -1){
+                        if(iter < 7 - figure.getPosition()) break;
+                    }
 
                     if(board.getEdgeBoard().get(j) == toField){
                         iter = 0;
                         gep = true;
+                        break;
                     }
+                }
+
+                if(figure.getOffset()[i] == 1 &&
+                        (figure.getPosition() == 7 ||
+                        figure.getPosition() == 15 ||
+                        figure.getPosition() == 23 ||
+                        figure.getPosition() == 31 ||
+                        figure.getPosition() == 39 ||
+                        figure.getPosition() == 47 ||
+                        figure.getPosition() == 55) && toField > 0) {
+                    iter = 0;
+                    break;
                 }
 
                 if(figure.getOffset()[i] == 7  || figure.getOffset()[i] == -9){
@@ -241,6 +278,22 @@ public class MoveGeneratorImpl implements MoveGenerator {
             if(figure.getOffset()[i] == - 6){
                 switch (figure.getPosition()) {
                     case 6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63 -> {
+                        continue;
+                    }
+                }
+            }
+
+            if(figure.getOffset()[i] == 10){
+                switch (figure.getPosition()) {
+                    case 6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55 -> {
+                        continue;
+                    }
+                }
+            }
+
+            if(figure.getOffset()[i] == -10){
+                switch (figure.getPosition()) {
+                    case 0, 1, 8, 9, 16, 17, 24, 25, 32, 33, 40, 41, 48, 49, 56, 57 -> {
                         continue;
                     }
                 }
