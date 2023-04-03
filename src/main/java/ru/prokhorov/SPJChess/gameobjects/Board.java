@@ -14,6 +14,8 @@ public class Board {
     private List<Integer> brokenFieldsWhite;
 
     private List<Integer> brokenFieldsBlack;
+
+    private List<Integer> edgeBoard;
     int remainingTime;
     FigureColor turn;
 
@@ -23,6 +25,35 @@ public class Board {
         this.formRecording = new ArrayList<>();
         this.brokenFieldsWhite = new ArrayList<>();
         this.brokenFieldsBlack = new ArrayList<>();
+        this.edgeBoard = new ArrayList<>();
+        edgeBoard.add(0);
+        edgeBoard.add(1);
+        edgeBoard.add(2);
+        edgeBoard.add(3);
+        edgeBoard.add(4);
+        edgeBoard.add(5);
+        edgeBoard.add(6);
+        edgeBoard.add(7);
+        edgeBoard.add(8);
+        edgeBoard.add(15);
+        edgeBoard.add(16);
+        edgeBoard.add(23);
+        edgeBoard.add(24);
+        edgeBoard.add(31);
+        edgeBoard.add(32);
+        edgeBoard.add(39);
+        edgeBoard.add(40);
+        edgeBoard.add(47);
+        edgeBoard.add(48);
+        edgeBoard.add(55);
+        edgeBoard.add(56);
+        edgeBoard.add(57);
+        edgeBoard.add(58);
+        edgeBoard.add(59);
+        edgeBoard.add(60);
+        edgeBoard.add(61);
+        edgeBoard.add(62);
+        edgeBoard.add(63);
     }
 
     public List<Figure> getListWhite() {
@@ -87,5 +118,9 @@ public class Board {
 
     public void setBrokenFieldBlack(Integer brokenFieldBlack) {
         this.brokenFieldsBlack.add(brokenFieldBlack);
+    }
+
+    public List<Integer> getEdgeBoard() {
+        return edgeBoard;
     }
 }
