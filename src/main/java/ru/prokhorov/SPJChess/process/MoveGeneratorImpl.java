@@ -124,7 +124,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
         int loop = figure.getOffset().length;
         int toField = 0;
         int iter = 0;
-        boolean gep = false;
+        boolean gep;
 
         for (int i = 0; i < loop; i++) {
 
@@ -141,6 +141,12 @@ public class MoveGeneratorImpl implements MoveGenerator {
                 }
 
                 for (int j = 0; j < board.getEdgeBoard().size(); j++) {
+
+                    if(figure.getOffset()[i] == 8 || figure.getOffset()[i] == -8) break;
+
+                    if((figure.getOffset()[i] == 1  || figure.getOffset()[i] == -1) &&
+                            toField - figure.getPosition() < 7 - figure.getPosition()) break;
+
                     if(board.getEdgeBoard().get(j) == toField){
                         iter = 0;
                         gep = true;
@@ -175,7 +181,6 @@ public class MoveGeneratorImpl implements MoveGenerator {
                     movesList.add(move);
                 }
 
-
                 if(checkField(toField, board) != null &&
                         checkField(toField, board).getColor() == figure.getColor()){
                     if(figure.getColor() == FigureColor.WHITE){
@@ -183,13 +188,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
                     }else{
                         board.setBrokenFieldBlack(toField);
                     }
-                    break;
-                }
-
-                if(checkField(toField, board) != null &&
-                        checkField(toField, board).getColor() != figure.getColor()){
-                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
-                    movesList.add(move);
+                    iter = 0;
                     break;
                 }
 
@@ -199,6 +198,15 @@ public class MoveGeneratorImpl implements MoveGenerator {
                     Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                     move.setCheck(true);
                     movesList.add(move);
+                    iter = 0;
+                    break;
+                }
+
+                if(checkField(toField, board) != null &&
+                        checkField(toField, board).getColor() != figure.getColor()){
+                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    movesList.add(move);
+                    iter = 0;
                     break;
                 }
 
