@@ -37,7 +37,8 @@ public class CoreBruteForceImpl implements CoreBruteForce {
         return newBoard;
     }
 
-    private boolean checkDetector(Board board){
+    @Override
+    public boolean checkDetector(Board board){
         FigureColor turn;
         List<Move> movesList;
         bufferBoard = board;

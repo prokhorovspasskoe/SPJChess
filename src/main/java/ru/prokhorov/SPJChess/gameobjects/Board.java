@@ -11,9 +11,9 @@ public class Board {
     private List<Figure> listWhite;
     private List<Figure> listBlack;
     private List<Move> formRecording;
-    private List<Integer> brokenFieldsWhite;
+    private final List<Integer> brokenFieldsWhite;
 
-    private List<Integer> brokenFieldsBlack;
+    private final List<Integer> brokenFieldsBlack;
 
     private List<Integer> edgeBoard;
     int remainingTime;

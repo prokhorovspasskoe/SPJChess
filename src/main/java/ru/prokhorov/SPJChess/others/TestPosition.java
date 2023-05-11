@@ -10,7 +10,34 @@ import java.util.List;
 public class TestPosition {
     public Board startPosition(){
         Board board = new Board();
-        board.setTurn(FigureColor.WHITE);
+        board.setTurn(FigureColor.BLACK);
+
+        board.setBrokenFieldBlack(40);
+        board.setBrokenFieldBlack(41);
+        board.setBrokenFieldBlack(42);
+        board.setBrokenFieldBlack(43);
+        board.setBrokenFieldBlack(44);
+        board.setBrokenFieldBlack(45);
+        board.setBrokenFieldBlack(46);
+        board.setBrokenFieldBlack(47);
+        board.setBrokenFieldWhite(16);
+        board.setBrokenFieldWhite(17);
+        board.setBrokenFieldWhite(18);
+        board.setBrokenFieldWhite(19);
+        board.setBrokenFieldWhite(20);
+        board.setBrokenFieldWhite(21);
+        board.setBrokenFieldWhite(22);
+        board.setBrokenFieldWhite(23);
+
+        board.setBrokenFieldBlack(24);
+        board.setBrokenFieldBlack(25);
+        board.setBrokenFieldBlack(26);
+        board.setBrokenFieldBlack(27);
+        board.setBrokenFieldBlack(28);
+        board.setBrokenFieldBlack(29);
+        board.setBrokenFieldBlack(30);
+        board.setBrokenFieldBlack(31);
+
 
         board.getListWhite().add(new King(FigureColor.WHITE, 4));
         board.getListWhite().add(new Queen(FigureColor.WHITE, 3));
@@ -32,9 +59,9 @@ public class TestPosition {
         board.getListBlack().add(new King(FigureColor.BLACK, 60));
         board.getListBlack().add(new Queen(FigureColor.BLACK, 59));
         board.getListBlack().add(new Bishop(FigureColor.BLACK, 58));
-        board.getListBlack().add(new Bishop(FigureColor.BLACK, 61));
+//        board.getListBlack().add(new Bishop(FigureColor.BLACK, 61));
         board.getListBlack().add(new Knight(FigureColor.BLACK, 57));
-        board.getListBlack().add(new Knight(FigureColor.BLACK, 62));
+//        board.getListBlack().add(new Knight(FigureColor.BLACK, 62));
         board.getListBlack().add(new Rook(FigureColor.BLACK, 56));
         board.getListBlack().add(new Rook(FigureColor.BLACK, 63));
         board.getListBlack().add(new Pawn(FigureColor.BLACK, 48));

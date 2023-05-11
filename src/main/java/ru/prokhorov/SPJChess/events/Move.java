@@ -9,6 +9,8 @@ public class Move {
    private int startPosition;
    private int targetPosition;
 
+   private String castling;
+
    private boolean isCheck;
 
     public Move(FigureName figureName, FigureColor figureColor, int startPosition, int targetPosition) {
@@ -17,6 +19,11 @@ public class Move {
         this.startPosition = startPosition;
         this.targetPosition = targetPosition;
         this.isCheck = false;
+        this.castling = "";
+    }
+
+    public Move(String castling){
+        this.castling = castling;
     }
 
     public FigureName getFigureName() {
@@ -57,5 +64,13 @@ public class Move {
 
     public void setCheck(boolean check) {
         isCheck = check;
+    }
+
+    public String getCastling() {
+        return castling;
+    }
+
+    public void setCastling(String castling) {
+        this.castling = castling;
     }
 }

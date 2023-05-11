@@ -5,6 +5,7 @@ import ru.prokhorov.SPJChess.gameobjects.Board;
 import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
+import ru.prokhorov.SPJChess.process.interfaces.CoreBruteForce;
 import ru.prokhorov.SPJChess.process.interfaces.MoveGenerator;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,9 @@ public class MoveGeneratorImpl implements MoveGenerator {
     }
 
     private List<Move> getKingMoves(Figure figure, Board board) {
+        CoreBruteForce coreBruteForce = new CoreBruteForceImpl();
         List<Move> kingMovesList = new ArrayList<>();
+        Move move = null;
         int loop = figure.getOffset().length;
         int toField = 0;
         List<Integer> brokenFields;
@@ -91,15 +94,80 @@ public class MoveGeneratorImpl implements MoveGenerator {
                         broken = true;
                         break;
                     }
+
+                    if(figure.getOffset()[i] == 2){
+                        toField = figure.getPosition() + 1;
+
+                        if(toField == brokenField){
+                            broken = true;
+                            break;
+                        }
+                    }
+
+                    if(figure.getOffset()[i] == -2){
+                        toField = figure.getPosition() - 1;
+
+                        if(toField == brokenField){
+                            broken = true;
+                            break;
+                        }
+                    }
                 }
 
                 if(!broken){
-                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
-                    kingMovesList.add(move);
-                    if(figure.getColor() == FigureColor.WHITE){
-                        board.setBrokenFieldWhite(toField);
-                    }else{
-                        board.setBrokenFieldBlack(toField);
+                    //Рокировка
+                    if(figure.getOffset()[i] == 2 || figure.getOffset()[i] == -2){
+
+                        if(coreBruteForce.checkDetector(board)) continue;
+
+                        for (int j = 0; j < board.getFormRecording().size(); j++) {
+
+                            // если король или лидья двигались, то выход.
+                            if(board.getFormRecording().get(j).getFigureName() == FigureName.KING &&
+                                    board.getFormRecording().get(j).getFigureColor() == figure.getColor()){
+                                break;
+                            }
+
+                            if(board.getFormRecording().get(j).getFigureName() == FigureName.ROOK &&
+                                    board.getFormRecording().get(j).getFigureColor() == figure.getColor() &&
+                                    figure.getOffset()[i] == 2 && figure.getColor() == FigureColor.WHITE &&
+                                    board.getFormRecording().get(j).getStartPosition() == 7){
+                                break;
+                            }
+
+                            if(board.getFormRecording().get(j).getFigureName() == FigureName.ROOK &&
+                                    board.getFormRecording().get(j).getFigureColor() == figure.getColor() &&
+                                    figure.getOffset()[i] == -2 && figure.getColor() == FigureColor.WHITE &&
+                                    board.getFormRecording().get(j).getStartPosition() == 0){
+                                break;
+                            }
+
+                            if(board.getFormRecording().get(j).getFigureName() == FigureName.ROOK &&
+                                    board.getFormRecording().get(j).getFigureColor() == figure.getColor() &&
+                                    figure.getOffset()[i] == 2 && figure.getColor() == FigureColor.BLACK &&
+                                    board.getFormRecording().get(j).getStartPosition() == 63){
+                                break;
+                            }
+
+                            if(board.getFormRecording().get(j).getFigureName() == FigureName.ROOK &&
+                                    board.getFormRecording().get(j).getFigureColor() == figure.getColor() &&
+                                    figure.getOffset()[i] == -2 && figure.getColor() == FigureColor.BLACK &&
+                                    board.getFormRecording().get(j).getStartPosition() == 56){
+                                break;
+                            }
+                        }
+
+                        if(figure.getOffset()[i] == 2){
+                            move = new Move("0-0");
+                            kingMovesList.add(move);
+                            continue;
+                        }
+
+                        if(figure.getOffset()[i] == -2){
+                            move = new Move("0-0-0");
+                            kingMovesList.add(move);
+                            continue;
+                        }
                     }
                 }
             }
@@ -111,7 +179,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
                 }else{
                     board.setBrokenFieldBlack(toField);
                 }
-                break;
+                continue;
             }
 
             // Убить фигуру противника не под боем.
@@ -126,7 +194,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
                 }
 
                 if(!broken){
-                    Move move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+                    move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
                     kingMovesList.add(move);
                     if(figure.getColor() == FigureColor.WHITE){
                         board.setBrokenFieldWhite(toField);
@@ -135,6 +203,9 @@ public class MoveGeneratorImpl implements MoveGenerator {
                     }
                 }
             }
+
+            move = new Move(figure.getName(), figure.getColor(), figure.getPosition(), toField);
+            kingMovesList.add(move);
         }
 
         return kingMovesList;
@@ -275,7 +346,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
                 }
             }
 
-            if(figure.getOffset()[i] == - 6){
+            if(figure.getOffset()[i] == -6){
                 switch (figure.getPosition()) {
                     case 6, 7, 14, 15, 22, 23, 30, 31, 38, 39, 46, 47, 54, 55, 62, 63 -> {
                         continue;

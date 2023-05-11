@@ -6,4 +6,5 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 
 public interface CoreBruteForce {
     Board makeMove(Board board);
+    boolean checkDetector(Board board);
 }
