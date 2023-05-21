@@ -9,12 +9,6 @@ import java.util.List;
 
 public class Pawn extends Figure {
 
-    FigureName name;
-    FigureColor color;
-    int weight;
-    int position;
-    int [] offset;
-
     public Pawn(FigureColor color, int position) {
         this.color = color;
         this.position = position;

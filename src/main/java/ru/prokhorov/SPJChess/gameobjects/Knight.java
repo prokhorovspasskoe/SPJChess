@@ -7,11 +7,6 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 import java.util.List;
 
 public class Knight extends Figure {
-    FigureName name;
-    FigureColor color;
-    int weight;
-    int position;
-    int [] offset;
 
     public Knight(FigureColor color, int position) {
         this.color = color;

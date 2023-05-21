@@ -1,12 +1,17 @@
 package ru.prokhorov.SPJChess.gameobjects.abstracts;
 
-import ru.prokhorov.SPJChess.gameobjects.enums.FieldName;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 import java.util.List;
 
 public abstract class Figure {
+
+    protected FigureName name;
+    protected FigureColor color;
+    protected int weight;
+    protected int position;
+    protected int [] offset;
 
     public abstract FigureName getName();
 

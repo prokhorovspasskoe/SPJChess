@@ -6,12 +6,6 @@ import ru.prokhorov.SPJChess.gameobjects.enums.FigureName;
 
 public class Queen extends Figure {
 
-    FigureName name;
-    FigureColor color;
-    int weight;
-    int position;
-    int [] offset;
-
     public Queen(FigureColor color, int position) {
         this.color = color;
         this.position = position;
