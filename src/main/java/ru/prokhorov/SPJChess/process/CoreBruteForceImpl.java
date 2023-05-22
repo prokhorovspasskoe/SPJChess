@@ -2,6 +2,7 @@ package ru.prokhorov.SPJChess.process;
 
 import ru.prokhorov.SPJChess.events.Move;
 import ru.prokhorov.SPJChess.gameobjects.Board;
+import ru.prokhorov.SPJChess.gameobjects.abstracts.Figure;
 import ru.prokhorov.SPJChess.gameobjects.enums.FigureColor;
 import ru.prokhorov.SPJChess.process.interfaces.CoreBruteForce;
 import ru.prokhorov.SPJChess.process.interfaces.MoveGenerator;
@@ -76,5 +77,47 @@ public class CoreBruteForceImpl implements CoreBruteForce {
     private Board bruteForce(Board bruteForceBoard, List<Move> moves){
         // Обновить списки фигур
         return null;
+    }
+
+    private double staticEvaluation(Board bruteForceBoard){
+        // Подсчёт материала
+        int whiteMaterial = 0;
+        int blackMaterial = 0;
+        int material;
+        double brokenFieldWhite;
+        double brokenFieldBlack;
+        double brokenFieldWeight;
+
+        List<Figure> blackFiguresList;
+        List<Figure> whiteFiguresList;
+
+        blackFiguresList = bruteForceBoard.getListBlack();
+        whiteFiguresList = bruteForceBoard.getListWhite();
+
+        for (Figure figure: whiteFiguresList) {
+            whiteMaterial += figure.getWeight();
+        }
+
+        for (Figure figure: blackFiguresList){
+            blackMaterial += figure.getWeight();
+        }
+
+        material = whiteMaterial - blackMaterial;
+
+        // Поля под боем
+        brokenFieldWhite = bruteForceBoard.getBrokenFieldsWhite().size() * 0.01;
+        brokenFieldBlack = bruteForceBoard.getBrokenFieldsBlack().size() * 0.01;
+
+        brokenFieldWeight = brokenFieldWhite - brokenFieldBlack;
+
+        // Безопасность короля
+
+        // Открытые линии
+
+        // Центр
+
+        // Слабые пешки и поля
+
+        return material + brokenFieldWeight;
     }
 }

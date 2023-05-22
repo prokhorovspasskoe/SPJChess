@@ -10,7 +10,7 @@ import java.util.List;
 public class TestPosition {
     public Board startPosition(){
         Board board = new Board();
-        board.setTurn(FigureColor.BLACK);
+        board.setTurn(FigureColor.WHITE);
 
         board.setBrokenFieldBlack(40);
         board.setBrokenFieldBlack(41);
@@ -59,9 +59,9 @@ public class TestPosition {
         board.getListBlack().add(new King(FigureColor.BLACK, 60));
         board.getListBlack().add(new Queen(FigureColor.BLACK, 59));
         board.getListBlack().add(new Bishop(FigureColor.BLACK, 58));
-//        board.getListBlack().add(new Bishop(FigureColor.BLACK, 61));
+        board.getListBlack().add(new Bishop(FigureColor.BLACK, 61));
         board.getListBlack().add(new Knight(FigureColor.BLACK, 57));
-//        board.getListBlack().add(new Knight(FigureColor.BLACK, 62));
+        board.getListBlack().add(new Knight(FigureColor.BLACK, 62));
         board.getListBlack().add(new Rook(FigureColor.BLACK, 56));
         board.getListBlack().add(new Rook(FigureColor.BLACK, 63));
         board.getListBlack().add(new Pawn(FigureColor.BLACK, 48));

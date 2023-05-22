@@ -514,7 +514,7 @@ public class MoveGeneratorImpl implements MoveGenerator {
 
         return moves;
     }
-
+    // Взятие на проходе
     private void takingOnThePass(Figure figure, List<Move> moves, Board board, int offset, int interference,
                                  int startOpp, int endOpp, int startTargetPos, int endTargetPos) {
         if(board.getFormRecording().size() > 0){
