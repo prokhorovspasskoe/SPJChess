@@ -17,7 +17,9 @@ public class Board {
 
     private List<Integer> edgeBoard;
     int remainingTime;
-    FigureColor turn;
+    private FigureColor turn;
+
+    private Double evaluation;
 
     public Board() {
         this.listWhite = new ArrayList<>();
@@ -122,5 +124,13 @@ public class Board {
 
     public List<Integer> getEdgeBoard() {
         return edgeBoard;
+    }
+
+    public Double getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Double evaluation) {
+        this.evaluation = evaluation;
     }
 }
